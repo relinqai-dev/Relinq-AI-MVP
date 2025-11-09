@@ -1,6 +1,3 @@
 {
-  "buildCommand": "cd smart-inventory-forecasting && npm run build",
-  "outputDirectory": "smart-inventory-forecasting/.next",
-  "installCommand": "cd smart-inventory-forecasting && npm install",
   "framework": "nextjs"
 }
