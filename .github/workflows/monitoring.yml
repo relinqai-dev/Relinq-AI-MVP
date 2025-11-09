@@ -1,0 +1,125 @@
+name: Production Monitoring
+
+on:
+  schedule:
+    # Run every 15 minutes
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+jobs:
+  health-monitoring:
+    name: Monitor Service Health
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Frontend Health
+        id: frontend-health
+        continue-on-error: true
+        run: |
+          response=$(curl -s -w "\n%{http_code}" ${{ secrets.PRODUCTION_URL }}/api/health)
+          status_code=$(echo "$response" | tail -n1)
+          body=$(echo "$response" | head -n-1)
+          
+          echo "status_code=$status_code" >> $GITHUB_OUTPUT
+          echo "Frontend response: $body"
+          
+          if [ $status_code -ne 200 ]; then
+            echo "❌ Frontend health check failed with status $status_code"
+            exit 1
+          fi
+          echo "✅ Frontend is healthy"
+
+      - name: Check Forecasting Service Health
+        id: forecasting-health
+        continue-on-error: true
+        run: |
+          response=$(curl -s -w "\n%{http_code}" ${{ secrets.FORECASTING_SERVICE_URL }}/health)
+          status_code=$(echo "$response" | tail -n1)
+          body=$(echo "$response" | head -n-1)
+          
+          echo "status_code=$status_code" >> $GITHUB_OUTPUT
+          echo "Forecasting service response: $body"
+          
+          if [ $status_code -ne 200 ]; then
+            echo "❌ Forecasting service health check failed with status $status_code"
+            exit 1
+          fi
+          echo "✅ Forecasting service is healthy"
+
+      - name: Check Database Connectivity
+        id: database-health
+        continue-on-error: true
+        run: |
+          # Simple check to verify Supabase is accessible
+          response=$(curl -s -o /dev/null -w "%{http_code}" ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}/rest/v1/)
+          
+          if [ $response -ne 200 ] && [ $response -ne 401 ]; then
+            echo "❌ Database connectivity check failed with status $response"
+            exit 1
+          fi
+          echo "✅ Database is accessible"
+
+      - name: Report Status
+        if: always()
+        run: |
+          echo "=== Health Check Summary ==="
+          echo "Frontend: ${{ steps.frontend-health.outcome }}"
+          echo "Forecasting Service: ${{ steps.forecasting-health.outcome }}"
+          echo "Database: ${{ steps.database-health.outcome }}"
+          
+          if [ "${{ steps.frontend-health.outcome }}" != "success" ] || \
+             [ "${{ steps.forecasting-health.outcome }}" != "success" ] || \
+             [ "${{ steps.database-health.outcome }}" != "success" ]; then
+            echo "⚠️ One or more services are unhealthy"
+            exit 1
+          fi
+          
+          echo "✅ All services are healthy"
+
+  performance-monitoring:
+    name: Monitor Performance Metrics
+    runs-on: ubuntu-latest
+    steps:
+      - name: Measure Frontend Response Time
+        run: |
+          start_time=$(date +%s%N)
+          curl -s -o /dev/null ${{ secrets.PRODUCTION_URL }}
+          end_time=$(date +%s%N)
+          
+          duration=$(( (end_time - start_time) / 1000000 ))
+          echo "Frontend response time: ${duration}ms"
+          
+          if [ $duration -gt 3000 ]; then
+            echo "⚠️ Frontend response time is slow (${duration}ms > 3000ms)"
+          else
+            echo "✅ Frontend response time is acceptable"
+          fi
+
+      - name: Measure API Response Time
+        run: |
+          start_time=$(date +%s%N)
+          curl -s -o /dev/null ${{ secrets.PRODUCTION_URL }}/api/health
+          end_time=$(date +%s%N)
+          
+          duration=$(( (end_time - start_time) / 1000000 ))
+          echo "API response time: ${duration}ms"
+          
+          if [ $duration -gt 1000 ]; then
+            echo "⚠️ API response time is slow (${duration}ms > 1000ms)"
+          else
+            echo "✅ API response time is acceptable"
+          fi
+
+      - name: Measure Forecasting Service Response Time
+        run: |
+          start_time=$(date +%s%N)
+          curl -s -o /dev/null ${{ secrets.FORECASTING_SERVICE_URL }}/health
+          end_time=$(date +%s%N)
+          
+          duration=$(( (end_time - start_time) / 1000000 ))
+          echo "Forecasting service response time: ${duration}ms"
+          
+          if [ $duration -gt 2000 ]; then
+            echo "⚠️ Forecasting service response time is slow (${duration}ms > 2000ms)"
+          else
+            echo "✅ Forecasting service response time is acceptable"
+          fi
