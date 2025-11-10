@@ -554,15 +554,18 @@ export class ForecastingManager {
   private initializeRealtimeSubscriptions(): void {
     try {
       // Subscribe to forecast updates
-      this.supabase
-        ?.channel('forecasts')
-        ?.on('postgres_changes', 
-          { event: '*', schema: 'public', table: 'forecasts' },
-          (payload: { new?: Forecast; old?: Forecast }) => {
-            this.handleRealtimeUpdate('forecasts', payload)
-          }
-        )
-        ?.subscribe()
+      const channel = this.supabase?.channel('forecasts')
+      if (channel) {
+        channel
+          .on(
+            'postgres_changes' as never,
+            { event: '*', schema: 'public', table: 'forecasts' },
+            (payload: { new?: Forecast; old?: Forecast }) => {
+              this.handleRealtimeUpdate('forecasts', payload)
+            }
+          )
+          .subscribe()
+      }
     } catch (error) {
       console.warn('Failed to initialize realtime subscriptions:', error)
     }
