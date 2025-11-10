@@ -39,11 +39,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [supabase.auth])
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
-    return { error: error ? { message: error.message } : undefined }
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+      
+      if (error) {
+        console.error('Login error:', error)
+        return { error: { message: error.message } }
+      }
+      
+      console.log('Login successful:', data)
+      return { error: undefined }
+    } catch (err) {
+      console.error('Login exception:', err)
+      return { error: { message: err instanceof Error ? err.message : 'Login failed' } }
+    }
   }
 
   const signOut = async () => {
@@ -62,15 +74,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     password: string,
     metadata?: { store_name: string; onboarding_completed: boolean }
   ) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: metadata,
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
-      },
-    })
-    return { error: error ? { message: error.message } : undefined }
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: metadata,
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
+      })
+      
+      if (error) {
+        console.error('Signup error:', error)
+        return { error: { message: error.message } }
+      }
+      
+      console.log('Signup successful:', data)
+      return { error: undefined }
+    } catch (err) {
+      console.error('Signup exception:', err)
+      return { error: { message: err instanceof Error ? err.message : 'Signup failed' } }
+    }
   }
 
   const value: AuthContextValue = {
