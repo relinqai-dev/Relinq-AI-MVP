@@ -83,30 +83,27 @@ export function QuickActions() {
           Quick Actions
         </CardTitle>
       </CardHeader>
-      <CardContent className="pt-6">
+      <CardContent className="p-6">
         {/* Responsive Grid Layout */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {actions.map((action, index) => {
             const IconComponent = action.icon
             return (
-              <Button
+              <button
                 key={index}
-                variant="ghost"
-                className="h-auto p-4 flex flex-col items-start space-y-3 hover:shadow-md transition-all duration-200 border border-gray-100 rounded-xl hover:scale-105"
                 onClick={action.onClick}
+                className="group relative bg-white p-6 rounded-2xl border-2 border-gray-100 hover:border-indigo-300 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 text-left"
               >
-                <div className={`p-3 rounded-xl ${action.bgColor} shadow-sm`}>
-                  <IconComponent className={`h-6 w-6 ${action.color}`} />
+                <div className={`inline-flex p-4 rounded-2xl ${action.bgColor} mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                  <IconComponent className={`h-7 w-7 ${action.color}`} />
                 </div>
-                <div className="text-left">
-                  <div className="font-semibold text-gray-900">
-                    {action.title}
-                  </div>
-                  <div className="text-xs text-gray-600 mt-1">
-                    {action.description}
-                  </div>
-                </div>
-              </Button>
+                <h3 className="font-bold text-gray-900 text-lg mb-2">
+                  {action.title}
+                </h3>
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  {action.description}
+                </p>
+              </button>
             )
           })}
         </div>
