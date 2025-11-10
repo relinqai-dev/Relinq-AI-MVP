@@ -1,0 +1,11 @@
+sku,name,current_stock,unit_cost,unit_price,supplier,supplier_email,lead_time_days,category
+SKU-001,Widget A,45,15.00,25.50,Acme Corp,orders@acme.com,7,Widgets
+SKU-002,Widget B,23,30.00,50.00,Beta Supplies,sales@beta.com,14,Widgets
+SKU-003,Gadget X,12,45.00,75.00,Acme Corp,orders@acme.com,7,Gadgets
+SKU-004,Tool Y,67,8.00,15.00,Tool Co,info@toolco.com,5,Tools
+SKU-005,Part Z,89,2.50,5.00,Parts Plus,orders@partsplus.com,10,Parts
+SKU-006,Component A,34,12.00,20.00,Acme Corp,orders@acme.com,7,Components
+SKU-007,Device B,18,55.00,90.00,Beta Supplies,sales@beta.com,14,Devices
+SKU-008,Accessory C,56,6.00,12.00,Parts Plus,orders@partsplus.com,10,Accessories
+SKU-009,Material D,92,3.00,6.00,Tool Co,info@toolco.com,5,Materials
+SKU-010,Product E,41,25.00,42.00,Acme Corp,orders@acme.com,7,Products
