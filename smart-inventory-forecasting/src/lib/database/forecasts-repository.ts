@@ -280,13 +280,13 @@ export class ForecastsRepository {
       }
 
       const forecasts = data || []
-      const uniqueSkus = new Set(forecasts.map((f: Forecast) => f.sku))
+      const uniqueSkus = new Set(forecasts.map((f) => f.sku))
       const validConfidenceScores = forecasts
-        .map((f: Forecast) => f.confidence_score)
+        .map((f) => f.confidence_score)
         .filter((score: number | null | undefined): score is number => score !== null && score !== undefined)
       
       const modelsUsed: Record<string, number> = {}
-      forecasts.forEach((f: Forecast) => {
+      forecasts.forEach((f) => {
         if (f.model_used) {
           modelsUsed[f.model_used] = (modelsUsed[f.model_used] || 0) + 1
         }
