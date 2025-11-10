@@ -76,14 +76,14 @@ export function QuickActions() {
   ]
 
   return (
-    <Card>
-      <CardHeader>
+    <Card className="border-none shadow-lg bg-white/80 backdrop-blur-sm">
+      <CardHeader className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-t-lg">
         <CardTitle className="flex items-center gap-2">
           <RefreshCw className="h-5 w-5" />
           Quick Actions
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="pt-6">
         {/* Responsive Grid Layout */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {actions.map((action, index) => {
@@ -92,17 +92,17 @@ export function QuickActions() {
               <Button
                 key={index}
                 variant="ghost"
-                className="h-auto p-4 flex flex-col items-start space-y-2 hover:bg-gray-50"
+                className="h-auto p-4 flex flex-col items-start space-y-3 hover:shadow-md transition-all duration-200 border border-gray-100 rounded-xl hover:scale-105"
                 onClick={action.onClick}
               >
-                <div className={`p-2 rounded-lg ${action.bgColor}`}>
-                  <IconComponent className={`h-5 w-5 ${action.color}`} />
+                <div className={`p-3 rounded-xl ${action.bgColor} shadow-sm`}>
+                  <IconComponent className={`h-6 w-6 ${action.color}`} />
                 </div>
                 <div className="text-left">
-                  <div className="font-medium text-gray-900">
+                  <div className="font-semibold text-gray-900">
                     {action.title}
                   </div>
-                  <div className="text-sm text-gray-500">
+                  <div className="text-xs text-gray-600 mt-1">
                     {action.description}
                   </div>
                 </div>
