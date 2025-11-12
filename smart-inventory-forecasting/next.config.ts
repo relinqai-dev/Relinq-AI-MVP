@@ -7,7 +7,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* React Compiler for better performance */
-  reactCompiler: true,
+  // reactCompiler: true, // Temporarily disabled due to versioned import issues
   
   /* Performance optimizations */
   compress: true,

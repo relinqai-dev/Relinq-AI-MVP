@@ -17,12 +17,81 @@ export default function DashboardClient() {
   const { user, loading } = useAuth();
   const router = useRouter();
   const [selectedStore, setSelectedStore] = useState('store-1');
+  const [insights, setInsights] = useState<any[]>([]);
+  const [atRiskItems, setAtRiskItems] = useState<any[]>([]);
+  const [topMovers] = useState([
+    { name: 'Vegan Cheese', forecast: 245 },
+    { name: 'Oat Milk', forecast: 198 },
+    { name: 'Kombucha', forecast: 176 },
+    { name: 'Almond Butter', forecast: 154 },
+    { name: 'Protein Bars', forecast: 142 },
+  ]);
+  const [dataLoading, setDataLoading] = useState(true);
 
   useEffect(() => {
     if (!loading && !user) {
       router.push('/auth/login');
     }
   }, [user, loading, router]);
+
+  // Product Brain Architecture: Fetch data from both engines
+  // Data Source: Works with BOTH CSV uploads AND API integrations
+  // The engines process data from Supabase regardless of how it got there
+  useEffect(() => {
+    if (!user) return;
+
+    const fetchDashboardData = async () => {
+      try {
+        setDataLoading(true);
+
+        // Step 1: Forecasting Engine (Mathematician) - Get at-risk inventory numbers
+        // This works with data from CSV upload OR POS API integration
+        const atRiskResponse = await fetch('/api/at-risk-inventory');
+        const atRiskData = await atRiskResponse.json();
+        
+        if (atRiskData.success) {
+          const formattedAtRisk = atRiskData.data.map((item: any) => ({
+            itemName: item.itemName,
+            currentStock: item.currentStock,
+            salesVelocity: item.salesVelocity,
+            stockoutDate: item.forecastedStockoutDate,
+            recommendedQty: item.recommendedQty,
+          }));
+          setAtRiskItems(formattedAtRisk);
+
+          // Step 2: AI Agent (Store Manager) - Turn numbers into narrative
+          const insightsResponse = await fetch('/api/actionable-insights', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ atRiskItems: atRiskData.data }),
+          });
+          const insightsData = await insightsResponse.json();
+          
+          if (insightsData.success) {
+            const formattedInsights = insightsData.data.map((insight: any) => ({
+              id: insight.id,
+              type: insight.type as 'stockout' | 'anomaly' | 'trend',
+              title: insight.title,
+              message: insight.message,
+              action: insight.action,
+              onAction: () => {
+                if (insight.type === 'stockout') router.push('/dashboard/purchase-orders');
+                else if (insight.type === 'anomaly') router.push('/dashboard/data-cleanup');
+                else router.push('/dashboard/forecasting');
+              },
+            }));
+            setInsights(formattedInsights);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+      } finally {
+        setDataLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, [user, router]);
 
   if (loading) {
     return (
@@ -39,66 +108,6 @@ export default function DashboardClient() {
     return null;
   }
 
-  // Mock data - will be replaced with real data from Supabase
-  const insights = [
-    {
-      id: '1',
-      type: 'stockout' as const,
-      title: 'Stockout Risk',
-      message: "You are on track to sell out of 'Brand-Name Milk' in 2 days. Sales are 30% higher than average. I recommend ordering 40 units now.",
-      action: 'Order Now',
-      onAction: () => router.push('/dashboard/purchase-orders'),
-    },
-    {
-      id: '2',
-      type: 'anomaly' as const,
-      title: 'Data Anomaly',
-      message: "You have 3 items named 'Coca-Cola 12oz' in your POS. This may be skewing your forecast.",
-      action: 'Merge Items',
-      onAction: () => router.push('/dashboard/data-cleanup'),
-    },
-    {
-      id: '3',
-      type: 'trend' as const,
-      title: 'New Trend',
-      message: "Sales for 'Vegan Cheese' have doubled in the last 14 days. Your forecast has been adjusted.",
-      action: 'View Details',
-      onAction: () => router.push('/dashboard/forecasting'),
-    },
-  ];
-
-  const atRiskItems = [
-    {
-      itemName: 'Brand-Name Milk',
-      currentStock: 15,
-      salesVelocity: 7.5,
-      stockoutDate: '2 days',
-      recommendedQty: 40,
-    },
-    {
-      itemName: 'Organic Eggs',
-      currentStock: 24,
-      salesVelocity: 6.2,
-      stockoutDate: '4 days',
-      recommendedQty: 30,
-    },
-    {
-      itemName: 'Whole Wheat Bread',
-      currentStock: 12,
-      salesVelocity: 4.8,
-      stockoutDate: '3 days',
-      recommendedQty: 25,
-    },
-  ];
-
-  const topMovers = [
-    { name: 'Vegan Cheese', forecast: 245 },
-    { name: 'Oat Milk', forecast: 198 },
-    { name: 'Kombucha', forecast: 176 },
-    { name: 'Almond Butter', forecast: 154 },
-    { name: 'Protein Bars', forecast: 142 },
-  ];
-
   return (
     <div className="min-h-screen bg-slate-50">
       <AppHeader selectedStore={selectedStore} onStoreChange={setSelectedStore} />
@@ -113,8 +122,15 @@ export default function DashboardClient() {
               <p className="text-slate-600 mt-2">Actionable insights to keep your inventory optimized</p>
             </div>
 
-            {/* Actionable Insights */}
-            <ActionableInsights insights={insights} />
+            {/* Actionable Insights - AI Agent (Store Manager) output */}
+            {dataLoading ? (
+              <div className="text-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-violet-600 mx-auto"></div>
+                <p className="mt-2 text-slate-600">Loading insights...</p>
+              </div>
+            ) : (
+              <ActionableInsights insights={insights} />
+            )}
 
             {/* Metrics Overview */}
             <DashboardMetrics />
@@ -122,7 +138,7 @@ export default function DashboardClient() {
             {/* Quick Actions */}
             <QuickActions />
 
-            {/* At-Risk Inventory */}
+            {/* At-Risk Inventory - Forecasting Engine (Mathematician) output */}
             <AtRiskInventory items={atRiskItems} />
 
             {/* Bottom Grid */}
