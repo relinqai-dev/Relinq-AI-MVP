@@ -1,7 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { AppHeader } from '@/components/layout/AppHeader';
+import { AppSidebar } from '@/components/layout/AppSidebar';
 import { DataCleanupDashboard } from '@/components/data-cleanup';
 import { DuplicateItemMerger } from '@/components/data-cleanup/DuplicateItemMerger';
 import { SupplierAssignmentWorkflow } from '@/components/data-cleanup/SupplierAssignmentWorkflow';
@@ -190,9 +192,27 @@ export function DataCleanupClient() {
 
     default:
       return (
-        <DataCleanupDashboard
-          onComplete={handleCleanupComplete}
-        />
+        <div className="min-h-screen bg-slate-50">
+          <AppHeader />
+          <AppSidebar />
+          
+          <main className="ml-64 pt-16">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+              <div className="space-y-6">
+                <div>
+                  <h1 className="text-3xl font-bold text-slate-900">Data Quality Management</h1>
+                  <p className="text-slate-600 mt-2">
+                    Identify and resolve data quality issues to improve forecast accuracy
+                  </p>
+                </div>
+                
+                <DataCleanupDashboard
+                  onComplete={handleCleanupComplete}
+                />
+              </div>
+            </div>
+          </main>
+        </div>
       );
   }
 }
