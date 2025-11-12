@@ -241,16 +241,33 @@ export function useForecastMetrics() {
   }
 }
 
+interface ReorderRecommendation {
+  urgency?: string;
+  recommendedOrder?: number;
+  unitCost?: number;
+}
+
+interface RecommendationsResult {
+  recommendations?: ReorderRecommendation[];
+}
+
+interface ReorderFilters {
+  urgency?: Array<'high' | 'medium' | 'low'>;
+  supplier?: string;
+  minConfidence?: number;
+  maxDaysUntilStockout?: number;
+}
+
 export function useReorderRecommendations(autoRefresh: boolean = true) {
   const { getReorderRecommendations } = useForecasting()
-  const [recommendations, setRecommendations] = useState<any>(null)
+  const [recommendations, setRecommendations] = useState<RecommendationsResult | null>(null)
   const [loading, setLoading] = useState(false)
 
-  const fetchRecommendations = useCallback(async (filters?: any) => {
+  const fetchRecommendations = useCallback(async (filters?: ReorderFilters) => {
     setLoading(true)
     try {
       const result = await getReorderRecommendations(filters)
-      setRecommendations(result)
+      setRecommendations(result as RecommendationsResult)
     } catch (error) {
       console.error('Error fetching recommendations:', error)
     } finally {
@@ -268,8 +285,8 @@ export function useReorderRecommendations(autoRefresh: boolean = true) {
     recommendations,
     loading,
     refresh: fetchRecommendations,
-    urgentItems: recommendations?.recommendations?.filter((r: { urgency?: string }) => r.urgency === 'high') || [],
-    totalValue: recommendations?.recommendations?.reduce((sum: number, r: { recommendedOrder?: number; unitCost?: number }) => 
+    urgentItems: recommendations?.recommendations?.filter((r) => r.urgency === 'high') || [],
+    totalValue: recommendations?.recommendations?.reduce((sum: number, r) => 
       sum + ((r.recommendedOrder || 0) * (r.unitCost || 0)), 0) || 0
   }
 }
