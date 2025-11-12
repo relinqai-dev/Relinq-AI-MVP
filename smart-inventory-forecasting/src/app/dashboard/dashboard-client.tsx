@@ -9,7 +9,7 @@ import { ActionableInsights } from '@/components/dashboard/ActionableInsights';
 import { AtRiskInventory } from '@/components/dashboard/AtRiskInventory';
 import { TopMovers } from '@/components/dashboard/TopMovers';
 import { DataHealthCard } from '@/components/dashboard/DataHealthCard';
-import { ForecastingWidget } from '@/components/forecasting/ForecastingWidget';
+// import { ForecastingWidget } from '@/components/forecasting/ForecastingWidget';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 
@@ -17,8 +17,21 @@ export default function DashboardClient() {
   const { user, loading } = useAuth();
   const router = useRouter();
   const [selectedStore, setSelectedStore] = useState('store-1');
-  const [insights, setInsights] = useState<any[]>([]);
-  const [atRiskItems, setAtRiskItems] = useState<any[]>([]);
+  const [insights, setInsights] = useState<Array<{
+    id: string;
+    type: 'stockout' | 'anomaly' | 'trend';
+    title: string;
+    message: string;
+    action: string;
+    onAction?: () => void;
+  }>>([]);
+  const [atRiskItems, setAtRiskItems] = useState<Array<{
+    itemName: string;
+    currentStock: number;
+    salesVelocity: number;
+    stockoutDate: string;
+    recommendedQty: number;
+  }>>([]);
   const [topMovers] = useState([
     { name: 'Vegan Cheese', forecast: 245 },
     { name: 'Oat Milk', forecast: 198 },
@@ -50,7 +63,13 @@ export default function DashboardClient() {
         const atRiskData = await atRiskResponse.json();
         
         if (atRiskData.success) {
-          const formattedAtRisk = atRiskData.data.map((item: any) => ({
+          const formattedAtRisk = atRiskData.data.map((item: {
+            itemName: string;
+            currentStock: number;
+            salesVelocity: number;
+            forecastedStockoutDate: string;
+            recommendedQty: number;
+          }) => ({
             itemName: item.itemName,
             currentStock: item.currentStock,
             salesVelocity: item.salesVelocity,
@@ -68,7 +87,13 @@ export default function DashboardClient() {
           const insightsData = await insightsResponse.json();
           
           if (insightsData.success) {
-            const formattedInsights = insightsData.data.map((insight: any) => ({
+            const formattedInsights = insightsData.data.map((insight: {
+              id: string;
+              type: string;
+              title: string;
+              message: string;
+              action: string;
+            }) => ({
               id: insight.id,
               type: insight.type as 'stockout' | 'anomaly' | 'trend',
               title: insight.title,
@@ -151,8 +176,8 @@ export default function DashboardClient() {
               />
             </div>
 
-            {/* Forecasting Widget */}
-            <ForecastingWidget />
+            {/* Forecasting Widget - Removed temporarily due to server/client import conflict */}
+            {/* <ForecastingWidget /> */}
           </div>
         </div>
       </main>

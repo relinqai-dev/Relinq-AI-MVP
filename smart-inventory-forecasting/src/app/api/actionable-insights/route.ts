@@ -11,7 +11,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { atRiskItems } = await request.json();
+    interface AtRiskItem {
+      id: string;
+      itemName: string;
+      forecastedStockoutDate: string;
+      salesVelocity: number;
+      recommendedQty: number;
+    }
+    
+    const { atRiskItems }: { atRiskItems: AtRiskItem[] } = await request.json();
 
     // AI AGENT (Store Manager) - Turns numbers into narrative
     // Works with data from BOTH sources (CSV upload or API integration)
@@ -35,7 +43,7 @@ export async function POST(request: Request) {
     const insights = [];
 
     // Generate stockout risk insights from forecasting data
-    const urgentItems = atRiskItems.filter((item: any) => {
+    const urgentItems = atRiskItems.filter((item) => {
       const days = parseInt(item.forecastedStockoutDate);
       return days <= 3;
     });
@@ -55,7 +63,7 @@ export async function POST(request: Request) {
 
     // Generate data quality insights
     if (cleanupIssues && cleanupIssues.length > 0) {
-      const duplicates = cleanupIssues.filter((issue: any) => issue.issue_type === 'duplicate');
+      const duplicates = cleanupIssues.filter((issue: { issue_type: string }) => issue.issue_type === 'duplicate');
       if (duplicates.length > 0) {
         insights.push({
           id: 'data-quality-1',

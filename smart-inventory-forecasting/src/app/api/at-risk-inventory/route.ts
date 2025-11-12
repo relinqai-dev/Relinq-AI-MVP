@@ -16,12 +16,12 @@ export async function GET() {
     // 2. API Integration: Data fetched from POS and stored in Supabase
     
     // Fetch inventory and sales data from Supabase (regardless of source)
-    const { data: inventoryData, error: invError } = await supabase
+    const { data: inventoryData } = await supabase
       .from('inventory_items')
       .select('*')
       .eq('user_id', user.id);
 
-    const { data: salesData, error: salesError } = await supabase
+    const { data: salesData } = await supabase
       .from('sales_data')
       .select('*')
       .eq('user_id', user.id)
@@ -40,11 +40,23 @@ export async function GET() {
     // Calculate at-risk items using forecasting algorithm
     // TODO: Implement actual time-series forecasting
     // For now, use simple velocity-based calculation
+    interface InventoryItem {
+      id: string;
+      sku: string;
+      name: string;
+      current_stock: number;
+    }
+    
+    interface SaleData {
+      sku: string;
+      quantity: number;
+    }
+    
     const atRiskItems = inventoryData
-      .map((item: any) => {
+      .map((item: InventoryItem) => {
         // Calculate sales velocity from sales data
-        const itemSales = salesData?.filter((sale: any) => sale.sku === item.sku) || [];
-        const totalSold = itemSales.reduce((sum: number, sale: any) => sum + (sale.quantity || 0), 0);
+        const itemSales = salesData?.filter((sale: SaleData) => sale.sku === item.sku) || [];
+        const totalSold = itemSales.reduce((sum: number, sale: SaleData) => sum + (sale.quantity || 0), 0);
         const daysOfData = 30;
         const salesVelocity = totalSold / daysOfData;
         
@@ -69,8 +81,8 @@ export async function GET() {
         }
         return null;
       })
-      .filter((item: any) => item !== null)
-      .sort((a: any, b: any) => {
+      .filter((item): item is NonNullable<typeof item> => item !== null)
+      .sort((a, b) => {
         // Sort by urgency (days until stockout)
         const aDays = parseInt(a.forecastedStockoutDate);
         const bDays = parseInt(b.forecastedStockoutDate);
