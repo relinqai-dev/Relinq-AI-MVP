@@ -4,12 +4,12 @@
  * Requirements: 3.5 - Store forecast data
  */
 
-import { createClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/client'
 import { Forecast, CreateForecast, SalesData, InventoryItem } from '@/types/database'
 
 export class ForecastsRepository {
-  private async getSupabase() {
-    return await createClient()
+  private getSupabase() {
+    return createClient()
   }
 
   /**

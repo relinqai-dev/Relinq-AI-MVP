@@ -169,15 +169,7 @@ export function ForecastingWidget({
         {urgentItems.length > 0 && (
           <div className="space-y-2">
             <h4 className="text-sm font-medium">Top Reorder Recommendations</h4>
-            {urgentItems.slice(0, maxItems).map((item: { 
-              sku: string; 
-              itemName: string; 
-              urgency: string; 
-              daysUntilStockout: number;
-              currentStock?: number;
-              recommendedOrder?: number;
-              confidence?: number;
-            }) => (
+            {urgentItems.slice(0, maxItems).map((item) => (
               <div key={item.sku} className="flex items-center justify-between p-3 border rounded-lg">
                 <div className="flex-1">
                   <div className="text-sm font-medium">{item.itemName}</div>

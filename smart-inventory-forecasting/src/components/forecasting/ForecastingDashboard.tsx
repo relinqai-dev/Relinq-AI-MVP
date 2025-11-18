@@ -311,18 +311,9 @@ export function ForecastingDashboard() {
               </div>
             </CardHeader>
             <CardContent>
-              {recommendations?.recommendations?.length > 0 ? (
+              {(recommendations?.recommendations?.length ?? 0) > 0 ? (
                 <div className="space-y-4">
-                  {recommendations.recommendations.slice(0, 10).map((item: { 
-                    sku: string; 
-                    itemName: string; 
-                    urgency: string; 
-                    recommendedQuantity: number; 
-                    daysUntilStockout: number;
-                    currentStock: number;
-                    recommendedOrder: number;
-                    confidence: number;
-                  }) => (
+                  {recommendations?.recommendations?.slice(0, 10).map((item) => (
                     <div key={item.sku} className="flex items-center justify-between p-4 border rounded-lg">
                       <div className="flex-1">
                         <div className="flex items-center space-x-2">
@@ -344,7 +335,7 @@ export function ForecastingDashboard() {
                           {item.daysUntilStockout} days left
                         </div>
                         <div className="text-sm text-muted-foreground">
-                          {Math.round(item.confidence * 100)}% confidence
+                          {Math.round((item.confidence ?? 0) * 100)}% confidence
                         </div>
                       </div>
                     </div>

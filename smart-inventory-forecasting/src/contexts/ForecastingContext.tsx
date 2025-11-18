@@ -242,8 +242,14 @@ export function useForecastMetrics() {
 }
 
 interface ReorderRecommendation {
-  urgency?: string;
+  sku: string;
+  itemName: string;
+  urgency: string;
+  recommendedQuantity?: number;
+  daysUntilStockout?: number;
+  currentStock?: number;
   recommendedOrder?: number;
+  confidence?: number;
   unitCost?: number;
 }
 
