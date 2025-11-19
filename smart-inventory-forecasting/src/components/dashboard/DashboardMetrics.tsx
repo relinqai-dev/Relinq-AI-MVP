@@ -157,10 +157,10 @@ export function DashboardMetrics() {
     <div className="space-y-4">
       {/* Last Updated Indicator */}
       <div className="flex justify-between items-center">
-        <h2 className="text-lg font-semibold text-gray-900">
+        <h2 className="text-2xl font-bold text-gray-900">
           Dashboard Overview
         </h2>
-        <div className="text-xs text-gray-500">
+        <div className="text-sm text-gray-600 font-medium">
           Last updated: {formatLastUpdated()}
         </div>
       </div>
@@ -168,82 +168,90 @@ export function DashboardMetrics() {
       {/* Metrics Grid - Responsive Layout */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {/* Total Items */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
+        <Card className="border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+            <CardTitle className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
               Total Items
             </CardTitle>
-            <Package className="h-4 w-4 text-muted-foreground" />
+            <div className="p-2 bg-blue-100 rounded-lg">
+              <Package className="h-5 w-5 text-blue-600" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-3xl font-bold text-gray-900">
               {inventoryMetrics?.total_items || 0}
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-gray-600 font-medium mt-1">
               Active inventory items
             </p>
           </CardContent>
         </Card>
 
         {/* Low Stock Alert */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
+        <Card className="border-orange-200 shadow-sm hover:shadow-md transition-shadow">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+            <CardTitle className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
               Low Stock Items
             </CardTitle>
-            <AlertTriangle className="h-4 w-4 text-orange-500" />
+            <div className="p-2 bg-orange-100 rounded-lg">
+              <AlertTriangle className="h-5 w-5 text-orange-600" />
+            </div>
           </CardHeader>
           <CardContent>
             <div className="flex items-center space-x-2">
-              <div className="text-2xl font-bold">
+              <div className="text-3xl font-bold text-gray-900">
                 {inventoryMetrics?.low_stock_items || 0}
               </div>
               {(inventoryMetrics?.low_stock_items || 0) > 0 && (
-                <Badge variant="secondary" className="text-orange-600">
+                <Badge className="bg-orange-100 text-orange-800 font-semibold border border-orange-200">
                   Action needed
                 </Badge>
               )}
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-gray-600 font-medium mt-1">
               Items below reorder point
             </p>
           </CardContent>
         </Card>
 
         {/* Sales Trend */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
+        <Card className="border-green-200 shadow-sm hover:shadow-md transition-shadow">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+            <CardTitle className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
               7-Day Sales
             </CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            <div className="p-2 bg-green-100 rounded-lg">
+              <TrendingUp className="h-5 w-5 text-green-600" />
+            </div>
           </CardHeader>
           <CardContent>
             <div className="flex items-center space-x-2">
-              <div className="text-2xl font-bold">
+              <div className="text-3xl font-bold text-gray-900">
                 {formatCurrency(salesMetrics?.total_sales_7_days || 0)}
               </div>
               {salesMetrics?.sales_trend && getTrendIcon(salesMetrics.sales_trend)}
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-gray-600 font-medium mt-1">
               Revenue last 7 days
             </p>
           </CardContent>
         </Card>
 
         {/* Inventory Value */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
+        <Card className="border-purple-200 shadow-sm hover:shadow-md transition-shadow">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+            <CardTitle className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
               Inventory Value
             </CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+            <div className="p-2 bg-purple-100 rounded-lg">
+              <DollarSign className="h-5 w-5 text-purple-600" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-3xl font-bold text-gray-900">
               {formatCurrency(inventoryMetrics?.total_inventory_value || 0)}
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-gray-600 font-medium mt-1">
               Total stock value
             </p>
           </CardContent>
@@ -252,15 +260,17 @@ export function DashboardMetrics() {
 
       {/* Critical Alerts - High Priority Items */}
       {(inventoryMetrics?.out_of_stock_items || 0) > 0 && (
-        <Card className="border-red-200 bg-red-50">
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <AlertTriangle className="h-5 w-5 text-red-600" />
+        <Card className="border-red-300 bg-red-50 shadow-sm">
+          <CardContent className="p-5">
+            <div className="flex items-start space-x-3">
+              <div className="p-2 bg-red-100 rounded-lg">
+                <AlertTriangle className="h-6 w-6 text-red-600" />
+              </div>
               <div>
-                <p className="font-medium text-red-800">
+                <p className="font-bold text-red-900 text-lg">
                   {inventoryMetrics?.out_of_stock_items} items are out of stock
                 </p>
-                <p className="text-sm text-red-600">
+                <p className="text-sm text-red-700 font-medium mt-1">
                   Immediate attention required to prevent lost sales
                 </p>
               </div>
@@ -271,23 +281,23 @@ export function DashboardMetrics() {
 
       {/* Top Selling Items - Mobile Responsive */}
       {salesMetrics?.top_selling_items && salesMetrics.top_selling_items.length > 0 && (
-        <Card>
+        <Card className="border-gray-200 shadow-sm">
           <CardHeader>
-            <CardTitle className="text-sm font-medium">
+            <CardTitle className="text-lg font-bold text-gray-900">
               Top Selling Items (7 days)
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-2">
+            <div className="space-y-4">
               {salesMetrics.top_selling_items.slice(0, 3).map((item) => (
-                <div key={item.sku} className="flex justify-between items-center text-sm">
+                <div key={item.sku} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium truncate">{item.name}</p>
-                    <p className="text-gray-500 text-xs">SKU: {item.sku}</p>
+                    <p className="font-semibold text-gray-900 truncate">{item.name}</p>
+                    <p className="text-gray-600 text-sm font-medium">SKU: {item.sku}</p>
                   </div>
                   <div className="text-right ml-4">
-                    <p className="font-medium">{item.quantity_sold} sold</p>
-                    <p className="text-gray-500 text-xs">
+                    <p className="font-bold text-gray-900">{item.quantity_sold} sold</p>
+                    <p className="text-gray-600 text-sm font-semibold">
                       {formatCurrency(item.revenue)}
                     </p>
                   </div>

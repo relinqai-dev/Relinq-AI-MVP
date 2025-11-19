@@ -96,11 +96,11 @@ export default function InventoryPageClient() {
   const getStockBadge = (status: string) => {
     switch (status) {
       case 'in-stock':
-        return <Badge className="bg-green-100 text-green-700">In Stock</Badge>;
+        return <Badge className="bg-emerald-100 text-emerald-800 font-semibold border border-emerald-200">In Stock</Badge>;
       case 'low-stock':
-        return <Badge className="bg-amber-100 text-amber-700">Low Stock</Badge>;
+        return <Badge className="bg-amber-100 text-amber-800 font-semibold border border-amber-200">Low Stock</Badge>;
       case 'out-of-stock':
-        return <Badge variant="destructive">Out of Stock</Badge>;
+        return <Badge className="bg-red-100 text-red-800 font-semibold border border-red-200">Out of Stock</Badge>;
       default:
         return null;
     }
@@ -115,9 +115,9 @@ export default function InventoryPageClient() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="space-y-6">
             {/* Header */}
-            <div>
-              <h1 className="text-3xl font-bold text-slate-900">Master Catalog</h1>
-              <p className="text-slate-600 mt-2">Your single source of truth for all products</p>
+            <div className="space-y-1">
+              <h1 className="text-4xl font-bold text-gray-900 tracking-tight">Master Catalog</h1>
+              <p className="text-lg text-gray-600 font-medium">Your single source of truth for all products</p>
             </div>
 
             {/* Filters */}
@@ -206,18 +206,18 @@ export default function InventoryPageClient() {
                       </TableRow>
                     ) : (
                       filteredInventory.map((item) => (
-                        <TableRow key={item.id} className="cursor-pointer hover:bg-slate-50">
-                          <TableCell className="font-medium text-slate-900">{item.name}</TableCell>
-                          <TableCell className="text-slate-600">{item.sku}</TableCell>
-                          <TableCell className="text-slate-600">{item.vendor}</TableCell>
-                          <TableCell className="text-slate-600">{item.category}</TableCell>
-                          <TableCell className="text-right text-slate-900">{item.currentStock}</TableCell>
-                          <TableCell className="text-right text-slate-900">{item.forecastedSales}</TableCell>
+                        <TableRow key={item.id} className="cursor-pointer hover:bg-gray-50 transition-colors">
+                          <TableCell className="font-semibold text-gray-900">{item.name}</TableCell>
+                          <TableCell className="text-gray-700 font-medium">{item.sku}</TableCell>
+                          <TableCell className="text-gray-700">{item.vendor}</TableCell>
+                          <TableCell className="text-gray-700">{item.category}</TableCell>
+                          <TableCell className="text-right font-semibold text-gray-900">{item.currentStock}</TableCell>
+                          <TableCell className="text-right font-semibold text-gray-900">{item.forecastedSales}</TableCell>
                           <TableCell>{getStockBadge(item.stockStatus)}</TableCell>
                           <TableCell>
                             <Button
                               size="sm"
-                              variant="outline"
+                              className="bg-gray-900 hover:bg-gray-800 text-white font-medium"
                               onClick={() => router.push(`/dashboard/inventory/${item.id}`)}
                             >
                               View Details

@@ -125,18 +125,18 @@ export function DataCleanupDashboard({ onComplete }: DataCleanupDashboardProps) 
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Data Cleanup</h1>
-          <p className="text-muted-foreground">
-            Review and resolve data quality issues to enable accurate forecasting
+        <div className="space-y-1">
+          <h1 className="text-4xl font-bold text-gray-900 tracking-tight">Data Quality Management</h1>
+          <p className="text-lg text-gray-600 font-medium">
+            Identify and resolve data quality issues to improve forecast accuracy
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <Button
             onClick={generateReport}
             variant="outline"
             disabled={isLoading}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 font-semibold border-gray-300 hover:bg-gray-50"
           >
             <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
             Refresh
@@ -144,7 +144,7 @@ export function DataCleanupDashboard({ onComplete }: DataCleanupDashboardProps) 
           <Button
             onClick={handleRunScan}
             disabled={isScanning}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white font-semibold"
           >
             <Play className={`h-4 w-4 ${isScanning ? 'animate-spin' : ''}`} />
             {isScanning ? 'Scanning...' : 'Run Scan'}
@@ -189,15 +189,17 @@ export function DataCleanupDashboard({ onComplete }: DataCleanupDashboardProps) 
       )}
 
       {/* Overview Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Issues</CardTitle>
-            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <Card className="border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+            <CardTitle className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Total Issues</CardTitle>
+            <div className="p-2 bg-red-100 rounded-lg">
+              <AlertTriangle className="h-5 w-5 text-red-600" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalIssues}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-3xl font-bold text-gray-900">{totalIssues}</div>
+            <p className="text-sm text-gray-600 font-medium mt-1">
               {unresolvedIssues.length} unresolved
             </p>
           </CardContent>

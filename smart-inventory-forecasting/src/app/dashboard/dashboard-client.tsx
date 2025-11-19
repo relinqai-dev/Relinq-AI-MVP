@@ -141,9 +141,9 @@ export default function DashboardClient() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="space-y-8">
             {/* Page Header */}
-            <div>
-              <h1 className="text-3xl font-bold text-slate-900">What You Need to Focus On Right Now</h1>
-              <p className="text-slate-600 mt-2">Actionable insights to keep your inventory optimized</p>
+            <div className="space-y-1">
+              <h1 className="text-4xl font-bold text-gray-900 tracking-tight">What You Need to Focus On Right Now</h1>
+              <p className="text-lg text-gray-600 font-medium">Actionable insights to keep your inventory optimized</p>
             </div>
 
             {/* Actionable Insights - AI Agent (Store Manager) output */}
