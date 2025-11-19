@@ -1,6 +1,6 @@
 'use client';
 
-import { LayoutDashboard, Package, Users, FileText, AlertTriangle, BarChart3, Upload } from 'lucide-react';
+import { LayoutDashboard, Package, Users, FileText, AlertTriangle, BarChart3, Upload, ShoppingCart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -9,10 +9,11 @@ const navItems = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
   { icon: Package, label: 'Inventory', path: '/dashboard/inventory' },
   { icon: BarChart3, label: 'Forecasting', path: '/dashboard/forecasting' },
+  { icon: ShoppingCart, label: 'Reorder List', path: '/dashboard/reorder' },
   { icon: AlertTriangle, label: 'Data Cleanup', path: '/dashboard/data-cleanup' },
   { icon: Users, label: 'Vendors', path: '/dashboard/vendors' },
   { icon: FileText, label: 'Purchase Orders', path: '/dashboard/purchase-orders' },
-  { icon: Upload, label: 'Import Data', path: '/onboarding' },
+  { icon: Upload, label: 'Import Data', path: '/dashboard/import' },
 ];
 
 export function AppSidebar() {

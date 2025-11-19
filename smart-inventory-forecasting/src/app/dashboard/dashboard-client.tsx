@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { AppHeader } from '@/components/layout/AppHeader';
 import { AppSidebar } from '@/components/layout/AppSidebar';
 import { DashboardMetrics } from '@/components/dashboard/DashboardMetrics';
-import { QuickActions } from '@/components/dashboard/QuickActions';
 import { ActionableInsights } from '@/components/dashboard/ActionableInsights';
 import { AtRiskInventory } from '@/components/dashboard/AtRiskInventory';
 import { TopMovers } from '@/components/dashboard/TopMovers';
@@ -159,9 +158,6 @@ export default function DashboardClient() {
 
             {/* Metrics Overview */}
             <DashboardMetrics />
-
-            {/* Quick Actions */}
-            <QuickActions />
 
             {/* At-Risk Inventory - Forecasting Engine (Mathematician) output */}
             <AtRiskInventory items={atRiskItems} />
